@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [allUsers, setAllUsers] = useState([]);
+    const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -15,12 +17,19 @@ export default function Signup() {
         }
 
         const newUser = { firstName, lastName, email, password };
-        setAllUsers([...allUsers, newUser]);
 
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setPassword("");
+        axios.post('http://localhost:3600/user/signup', newUser)
+            .then((res) => {
+                console.log('Response:', res);
+                alert('Signing up successful! please login')
+                navigate('/Signingin');
+            })
+            .catch((err) => {
+                console.error('Error', err.response ? err.response.data : err);
+                alert('Signup failed,try again')
+
+            })
+
     };
 
     return (
@@ -32,29 +41,33 @@ export default function Signup() {
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <input
                         type="text"
+                        name="firstName"
                         placeholder="First Name"
-                        value={firstName}
+                        // value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         style={styles.input}
                     />
                     <input
                         type="text"
+                        name="lastName"
                         placeholder="Last Name"
-                        value={lastName}
+                        // value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         style={styles.input}
                     />
                     <input
                         type="email"
+                        name="email"
                         placeholder="Email Address"
-                        value={email}
+                        // value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         style={styles.input}
                     />
                     <input
                         type="password"
+                        name="password"
                         placeholder="Password"
-                        value={password}
+                        // value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         style={styles.input}
                     />
@@ -64,20 +77,6 @@ export default function Signup() {
                     </button>
                 </form>
             </div>
-
-            {allUsers.length > 0 && (
-                <div style={styles.userList}>
-                    <h3 style={styles.userListTitle}>Registered Users</h3>
-                    {allUsers.map((user, index) => (
-                        <div key={index} style={styles.userCard}>
-                            <strong style={{ color: "#222" }}>
-                                {user.firstName} {user.lastName}
-                            </strong>
-                            <p style={{ color: "#666", fontSize: 14 }}>{user.email}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
         </div>
     );
 }
