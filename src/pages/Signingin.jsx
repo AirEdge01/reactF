@@ -14,10 +14,11 @@ const Signingin = () => {
         const userData = { email, password };
 
         try {
-            const res = await axios.post('http://localhost:3600/user/signingin', userData)
+            const res = await axios.post('https://nodeass3.onrender.com/user/signingin', userData)
             console.log('Response:', res.data);
 
-            if (res.data.success === true) {
+            if (res.data.token) {
+                localStorage.setItem('token', token)
                 alert('Signin successful ! Welcome back')
                 navigate('/Dashboard')
             }
